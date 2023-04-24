@@ -16,7 +16,7 @@ Main instruments: hugging face diffusers with pytorch
 git clone https://github.com/naburov/MidjourneyRemix
 cd MidjourneyRemix
 <create venv if you want>
-pip install -r requierments.txt
+pip install -r requirements.txt
 ```
 ## Usage
 To run:  
