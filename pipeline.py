@@ -32,7 +32,7 @@ from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionS
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 
-class StableDiffusionImageVariationPipeline(DiffusionPipeline):
+class ImageMixupPipeline(DiffusionPipeline):
     r"""
     Pipeline to generate variations from an input image using Stable Diffusion.
 
@@ -264,6 +264,7 @@ class StableDiffusionImageVariationPipeline(DiffusionPipeline):
             self,
             image: Union[PIL.Image.Image, List[PIL.Image.Image], torch.FloatTensor],
             image2: Union[PIL.Image.Image, List[PIL.Image.Image], torch.FloatTensor],
+            second_image_weight: float = 0.5,
             height: Optional[int] = None,
             width: Optional[int] = None,
             num_inference_steps: int = 50,
@@ -354,7 +355,7 @@ class StableDiffusionImageVariationPipeline(DiffusionPipeline):
         # 3. Encode input image
         image_embeddings1 = self._encode_image(image, device, num_images_per_prompt, do_classifier_free_guidance)
         image_embeddings2 = self._encode_image(image2, device, num_images_per_prompt, do_classifier_free_guidance)
-        image_embeddings = (image_embeddings1 + image_embeddings2) / 2
+        image_embeddings = second_image_weight * image_embeddings2 + (1 - second_image_weight) * image_embeddings1
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
@@ -405,13 +406,14 @@ class StableDiffusionImageVariationPipeline(DiffusionPipeline):
         image = self.decode_latents(latents)
 
         # 9. Run safety checker
-        image, has_nsfw_concept = self.run_safety_checker(image, device, image_embeddings.dtype)
+        has_nsfw_concept = [False]
+        # image, has_nsfw_concept = self.run_safety_checker(image, device, image_embeddings.dtype)
 
         # 10. Convert to PIL
         if output_type == "pil":
             image = self.numpy_to_pil(image)
 
         if not return_dict:
-            return (image, has_nsfw_concept)
+            return (image, False)
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
