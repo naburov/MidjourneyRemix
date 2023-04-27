@@ -9,6 +9,11 @@ Main instruments: hugging face diffusers with pytorch
     <td><img src="examples/1/style.jpeg" alt="2" width = 360px height = 360px></td>
     <td><img src="examples/1/result-0.5.jpg" alt="2" width = 360px height = 360px></td>
    </tr> 
+   <tr>
+    <td><img src="examples/4/gigachad.png"  alt="1" width = 360px height = 220px ></td>
+    <td><img src="examples/4/shrek-2.jpg" alt="2" width = 360px height = 220px></td>
+    <td><img src="examples/4/result-0.9-1.jpg" alt="2" width = 360px height = 360px></td>
+   </tr> 
 <table>
 
 ## Installation
